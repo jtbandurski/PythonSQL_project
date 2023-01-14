@@ -1,2 +1,2 @@
 # PythonSQL-Project
-PythonSQL project, groupmembers: Ahmed Haitham, Jakub Bandurski, Hamed Ahmed
+PythonSQL project, group members: Ahmed Haitham, Jakub Bandurski, Hamed Ahmed
