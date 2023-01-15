@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center mb-3">Habits time-line</h1>
+  {% if posts %}
+    {% for post in posts %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="lead">{{post.content}}</p>
+            </div>
+        </div>
+    {% endfor %}
+  {% else %}
+    <p> No Habits available</p>
+  {% endif %}
+{% endblock %}
