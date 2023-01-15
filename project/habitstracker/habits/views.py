@@ -8,3 +8,7 @@ def index(request):
     posts_lists = Posts.objects.order_by('-publish_date')[:10]
     context = {'posts': posts_lists}
     return render(request,'habits/index.html',context)
+
+def login(request):
+    return render(request,'habits/login.html')
+
