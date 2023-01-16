@@ -5,14 +5,19 @@
   {% if habits %}
     {% for habit in habits %}
         <div class="card mb-3">
-            <div class="card-body">
-                <p class="lead">{{habit.habbit_name}}</p>
-            </div>
+          <div class="card-header">
+            <h5 class="card-title mb-0">{{habit.habbit_name}}</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">{{habit.habbit_desc}}</p>
+          </div>
         </div>
-        <div class="medium"><a href="/add_habit">Add new Habit!</a></div>
     {% endfor %}
+    <div class="medium"><a href="/add_habit">Add new Habit!</a></div>
   {% else %}
     <p> No Habits available</p>
     <div class="medium"><a href="/add_habit">Add new Habit!</a></div>
   {% endif %}
+
+  
 {% endblock %}
