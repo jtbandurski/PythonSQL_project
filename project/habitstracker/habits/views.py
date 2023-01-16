@@ -46,6 +46,6 @@ def add_progress_submission(request):
 def my_habits(request):
     #ADD AUTHENTICATION AND USER DETAILS
 
-    habits_list = Habbits.objects.all().filter(user=0)
+    habits_list = Habbits.objects.all().filter(user=1)
     context = {'habits': habits_list}
     return render(request, 'habits/my_habits.html',context)
