@@ -54,6 +54,14 @@ class Likes(models.Model):
         managed = False
         db_table = 'likes'
 
+class Motivations(models.Model):
+    motivation_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey('UsersList', models.DO_NOTHING)
+    motivation_desc = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'motivations'
 
 class Posts(models.Model):
     post_id = models.AutoField(primary_key=True)
