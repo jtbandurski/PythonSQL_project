@@ -1,4 +1,3 @@
-from sqlite3 import IntegrityError
 from django.shortcuts import render, redirect
 
 from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList
@@ -12,26 +11,6 @@ def checkLogin():
     if  'user_id' not in session or  'user_Name' not in session: 
         return False
     return True
-
-def register(request):
-    context = {}
-    if request.method =='POST':
-        fname      = request.POST.get('fname')
-        lname      = request.POST.get('lname')
-        occupation = request.POST.get('occupation')
-        uname      = request.POST.get('uname')
-        email      = request.POST.get('email')
-        password   = request.POST.get('password')
-
-        try:
-            add_user= UsersList(first_name = fname,last_name=lname,occupation = occupation,user_name = uname, email=email,password=password)
-            add_user.save()
-            return redirect(login)
-        except IntegrityError:
-            context = {'message':'Data is not saved!'}
-
-    return render(request,'register.html',context)
-
 
 def index(request):
     # Check Auth
