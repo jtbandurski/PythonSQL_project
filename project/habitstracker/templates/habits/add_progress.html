@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center mb-3">Log Habits</h1>
+  {% if habits %}
+  
+    <div class="card">
+		<div class="card-header">
+			<h5 class="card-title mb-0">Select habit that you want to log</h5>
+		</div>
+			<div class="card-body">
+				<select class="form-select mb-3">
+						<option selected>List of your habits</option>
+						{% for habit in habits %}
+							<option>{{habit.habbit_name}}</option>
+						{% endfor %}
+						
+				</select>
+			</div>
+	</div>
+
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title mb-0">Date you want to insert</h5>
+		</div>
+		<div class="card-body">
+			<input type="date" id="date" name="date"
+       value="2023-01-16"
+       min="2018-01-01" max="2025-12-31">
+		</div>
+	</div>
+
+
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-title mb-0">How many UNITS have you ACTIVITY?</h5>
+		</div>
+		<div class="card-body text-center">
+			<input type="text" class="form-control" placeholder="Input">
+			
+		</div>
+		<div class="card-body text-center">
+			
+			<button class="btn btn-primary">Track you habit!</button>
+		</div>
+		
+	</div>
+	{% else %}
+    <p> No Habits available</p>
+  {% endif %}
+
+{% endblock %}
