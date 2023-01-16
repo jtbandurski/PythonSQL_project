@@ -17,7 +17,7 @@ def index(request):
     if not checkLogin():
         return redirect(login)
 
-    posts_lists = Posts.objects.order_by('-publish_date')[:10]
+    posts_lists = Posts.objects.raw('SELECT * FROM posts ORDER BY publish_date DESC LIMIT 10')
     context = {'posts': posts_lists}
     return render(request,'habits/index.html',context)
 
@@ -31,7 +31,7 @@ def login(request):
         users = UsersList.objects.filter(email=email, password=password).first()
       
         if not users:
-            context = {'message':'worng email or password'}
+            context = {'message':'wrong email or password'}
         else:
             session['user_id']   = users.user_id
             session['user_Name'] = users.user_name
@@ -53,7 +53,7 @@ def add_progress(request):
         return redirect(login)
     # ADD AUTHENTICATION AND USER DETAILS
 
-    habits_list = Habbits.objects.all().filter(user=0)
+    habits_list = Habbits.objects.raw('SELECT * FROM habbits WHERE user_id=0')
     context = {'habits': habits_list}
     return render(request, 'habits/add_progress.html', context)
 
@@ -84,7 +84,7 @@ def my_habits(request):
     if not checkLogin():
         return redirect(login)
 
-    habits_list = Habbits.objects.all().filter(user=1)
+    habits_list = Habbits.objects.raw('SELECT * FROM habbits WHERE user_id=0')
     context = {'habits': habits_list}
     return render(request, 'habits/my_habits.html',context)
 
@@ -94,7 +94,7 @@ def motivations(request):
     # Check Auth
     if not checkLogin():
         return redirect(login)
-        
-    motivations_list = Motivations.objects.all().filter(user=1)
+
+    motivations_list = Motivations.objects.raw('SELECT * FROM motivations WHERE user_id=0')
     context = {'motivations': motivations_list}
     return render(request,'habits/motivations.html',context)
