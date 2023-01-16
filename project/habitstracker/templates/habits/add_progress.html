@@ -13,7 +13,7 @@
 					<select class="form-select mb-3" name="selected_habit", id='selected_habit'>
 							<option selected>List of your habits</option>
 							{% for habit in habits %}
-								<option value="{{habit.habbit_id}}">{{habit.habbit_name}}</option>
+								<option value={{habit.habbit_id}}>{{habit.habbit_name}}</option>
 							{% endfor %}
 							
 					</select>

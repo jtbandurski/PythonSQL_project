@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center mb-3">My Habits</h1>
+  {% if habits %}
+    {% for habit in habits %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="lead">{{habit.habbit_name}}</p>
+            </div>
+        </div>
+        <div class="medium"><a href="/add_habit">Add new Habit!</a></div>
+    {% endfor %}
+  {% else %}
+    <p> No Habits available</p>
+    <div class="medium"><a href="/add_habit">Add new Habit!</a></div>
+  {% endif %}
+{% endblock %}
