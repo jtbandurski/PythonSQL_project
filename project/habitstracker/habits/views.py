@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Posts, Habbits, HabbitsTracker, Motivations
+from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList
 
 
 # Create view
@@ -11,8 +11,19 @@ def index(request):
     return render(request,'habits/index.html',context)
 
 def login(request):
-    
-    return render(request, 'login.html')
+    context = {}
+    if request.method =='POST':
+        email    = request.POST.get('email')
+        password = request.POST.get('password')
+        users = UsersList.objects.filter(email=email, password=password)
+      
+        if not users:
+            context = {'message':'worng email or password'}
+        else:
+            return redirect(index)
+  
+   
+    return render(request, 'login.html',context)
 
 # Track habbits progress
 def add_progress(request):
