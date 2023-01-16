@@ -12,6 +12,26 @@ def checkLogin():
         return False
     return True
 
+def register(request):
+    context = {}
+    if request.method =='POST':
+        fname      = request.POST.get('fname')
+        lname      = request.POST.get('lname')
+        occupation = request.POST.get('occupation')
+        uname      = request.POST.get('uname')
+        email      = request.POST.get('email')
+        password   = request.POST.get('password')
+
+        try:
+            add_user= UsersList(first_name = fname,last_name=lname,occupation = occupation,user_name = uname, email=email,password=password)
+            add_user.save()
+            return redirect(login)
+        except IntegrityError:
+            context = {'message':'Data is not saved!'}
+
+    return render(request,'register.html',context)
+
+
 def index(request):
     # Check Auth
     if not checkLogin():
