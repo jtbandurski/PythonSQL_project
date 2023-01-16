@@ -10,5 +10,5 @@ def index(request):
     return render(request,'habits/index.html',context)
 
 def login(request):
-    return render(request,'habits/login.html')
-
+    
+    return render(request, 'login.html')
