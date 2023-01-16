@@ -42,7 +42,6 @@ def add_progress_submission(request):
 
 
 # My Habits page
-
 def my_habits(request):
     #ADD AUTHENTICATION AND USER DETAILS
 
