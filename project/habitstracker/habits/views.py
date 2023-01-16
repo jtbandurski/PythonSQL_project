@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Posts, Habbits, HabbitsTracker
+from .models import Posts, Habbits, HabbitsTracker, Motivations
 
 
 # Create view
@@ -49,3 +49,13 @@ def my_habits(request):
     habits_list = Habbits.objects.all().filter(user=1)
     context = {'habits': habits_list}
     return render(request, 'habits/my_habits.html',context)
+
+
+#M otivations page
+
+def motivations(request):
+    #ADD AUTHENTICATION AND USER DETAILS
+
+    motivations_list = Motivations.objects.all().filter(user=1)
+    context = {'motivations': motivations_list}
+    return render(request,'habits/motivations.html',context)

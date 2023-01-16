@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center mb-3">My Habits</h1>
+  {% if motivations %}
+    {% for motivation in motivations %}
+        <div class="card mb-3">
+          <div class="card-header">
+            <h1 class="card-title mb-0">{{motivation.motivation_desc}}</h1>
+          </div>
+        </div>
+    {% endfor %}
+    <div class="medium"><a href="/add_motivation">Add new Motivation!</a></div>
+  {% else %}
+    <p> No Habits available</p>
+    <div class="medium"><a href="/add_motivation">Add new Motivation!</a></div>
+  {% endif %}
+
+  
+{% endblock %}

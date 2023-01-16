@@ -10,4 +10,5 @@ urlpatterns = [
     path('add_progress/',views.add_progress, name='add_progress'),
     path('add_progress/submission/',views.add_progress_submission,name='add_progress_submission'),
     path('my_habits/',views.my_habits, name='my_habits'),
+    path('motivations/',views.motivations, name='motivations'),
 ]
