@@ -6,7 +6,7 @@ from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList
 # Create view
 # Get and display Posts
 def index(request):
-    posts_lists = Posts.objects.order_by('-publish_date')[:10]
+    posts_lists = Posts.objects.raw('SELECT * FROM posts ORDER BY publish_date DESC LIMIT 10')
     context = {'posts': posts_lists}
     return render(request,'habits/index.html',context)
 
@@ -18,7 +18,7 @@ def login(request):
         users = UsersList.objects.filter(email=email, password=password)
       
         if not users:
-            context = {'message':'worng email or password'}
+            context = {'message':'wrong email or password'}
         else:
             return redirect(index)
   
@@ -29,7 +29,7 @@ def login(request):
 def add_progress(request):
     # ADD AUTHENTICATION AND USER DETAILS
 
-    habits_list = Habbits.objects.all().filter(user=0)
+    habits_list = Habbits.objects.raw('SELECT * FROM habbits WHERE user_id=0')
     context = {'habits': habits_list}
     return render(request, 'habits/add_progress.html', context)
 
@@ -56,7 +56,7 @@ def add_progress_submission(request):
 def my_habits(request):
     #ADD AUTHENTICATION AND USER DETAILS
 
-    habits_list = Habbits.objects.all().filter(user=1)
+    habits_list = Habbits.objects.raw('SELECT * FROM habbits WHERE user_id=0')
     context = {'habits': habits_list}
     return render(request, 'habits/my_habits.html',context)
 
@@ -66,6 +66,6 @@ def my_habits(request):
 def motivations(request):
     #ADD AUTHENTICATION AND USER DETAILS
 
-    motivations_list = Motivations.objects.all().filter(user=1)
+    motivations_list = Motivations.objects.raw('SELECT * FROM motivations WHERE user_id=0')
     context = {'motivations': motivations_list}
     return render(request,'habits/motivations.html',context)
