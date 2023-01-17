@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 
 from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList
 from django.contrib.sessions.backends.base import SessionBase
+from django.db import connections
+
 
 
 # Create view
@@ -12,6 +14,7 @@ def checkLogin():
         return False
     return True
 
+# handling register
 def register(request):
     context = {}
     if request.method =='POST':
@@ -42,7 +45,7 @@ def index(request):
     return render(request,'habits/index.html',context)
 
 
-
+# handling login
 def login(request):
     context = {}
     if request.method =='POST':
@@ -62,6 +65,7 @@ def login(request):
     
     return render(request, 'login.html',context)
 
+# handling logout
 def logout(request):
     session.clear()
     return redirect(login)
@@ -71,13 +75,13 @@ def add_progress(request):
      # Check Auth
     if not checkLogin():
         return redirect(login)
-    # ADD AUTHENTICATION AND USER DETAILS
 
-    habits_list = Habbits.objects.raw('SELECT * FROM habbits WHERE user_id=0')
+    user_id = session['user_id']
+    habits_list = Habbits.objects.raw('''SELECT * FROM habbits WHERE user_id = %s''',[user_id])
     context = {'habits': habits_list}
     return render(request, 'habits/add_progress.html', context)
 
-# handling action from the form
+# handling logging habbits
 def add_progress_submission(request):
      # Check Auth
     if not checkLogin():
@@ -88,13 +92,14 @@ def add_progress_submission(request):
         habit_id = request.POST["selected_habit"]
         amount = request.POST["amount"]
         date = request.POST["date"]
-        add = HabbitsTracker(habbit = habit_id,habbit_type=1,date = date,yes_no_value= None, success_amount_value=amount)
-        add.save()
-
-        posts_lists = Posts.objects.order_by('-publish_date')[:10]
-        context = {'posts': posts_lists}
-
-        return render(request,'habits/index.html',context)
+        cursor = connections['default'].cursor()
+        # get next id
+        habbits_tracker = Habbits.objects.raw('''SELECT * FROM habbits_tracker''')
+        next_id = len(habbits_tracker)
+        # insert
+        cursor.execute("INSERT INTO habbits_tracker VALUES( %s , %s, %s, %s, %s, %s)", [next_id, habit_id, 1, date, None, amount])
+        
+        return redirect('/habits')
     return redirect('/habits/add_progress')
 
 
@@ -104,17 +109,18 @@ def my_habits(request):
     if not checkLogin():
         return redirect(login)
 
-    habits_list = Habbits.objects.raw('SELECT * FROM habbits WHERE user_id=0')
+    user_id = session['user_id']
+    habits_list = Habbits.objects.raw('''SELECT * FROM habbits WHERE user_id = %s''',[user_id])
     context = {'habits': habits_list}
     return render(request, 'habits/my_habits.html',context)
 
-#M otivations page
+# Motivations page
 def motivations(request):
-    #ADD AUTHENTICATION AND USER DETAILS
     # Check Auth
     if not checkLogin():
         return redirect(login)
 
-    motivations_list = Motivations.objects.raw('SELECT * FROM motivations WHERE user_id=0')
+    user_id = session['user_id']
+    motivations_list = Motivations.objects.raw('''SELECT * FROM motivations WHERE user_id = %s''',[user_id])
     context = {'motivations': motivations_list}
     return render(request,'habits/motivations.html',context)
