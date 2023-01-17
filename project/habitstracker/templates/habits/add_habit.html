@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-center mb-3">Add New Habits</h1>
+  	<form method="post" action="submission/">
+		{% csrf_token %}
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title mb-0">What would you like to change in your life? (Habit description)</h5>
+			</div>
+				<div class="card-body">
+					<input type="text" id ='habit_desc' name='habit_desc'class="form-control" placeholder="Habit description">
+				</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title mb-0">Name for your Habit</h5>
+			</div>
+				<div class="card-body">
+					<input type="text" id ='habit_name' name='habit_name'class="form-control" placeholder="Habit name">
+				</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title mb-0">When is a day successful in context of this habit?</h5>
+			</div>
+				<div class="card-body">
+					<p>When I </p>
+					<input type="text" id ='success_activity' name='success_activity'class="form-control" placeholder="run">
+
+					<select class="form-select mb-3" name="success_range", id='success_range'>
+						<option selected value='no less than'>no less than</option>
+						<option value='no more than'>no more than</option>
+						<option value='exactly'>exactly</option>
+					</select>
+
+					<input type="number" id ='success_amount' name='success_amount'class="form-control" placeholder="10">
+					
+					<input type="text" id ='success_unit' name='success_unit'class="form-control" placeholder="kilometers">
+					<p>a day.</p>
+				</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header">
+				<h5 class="card-title mb-0">What is your target for number of success days?</h5>
+			</div>
+				<div class="card-body">
+					<input type="number" id ='habit_days_target' name='habit_days_target'class="form-control" placeholder="5">
+				</div>
+		</div>
+		<div class
+
+			<div class="card-body text-center">
+				
+				
+				<button type="submit" >Add your habit!</button>
+			</div>
+			
+		</div>
+	</form>
+
+{% endblock %}

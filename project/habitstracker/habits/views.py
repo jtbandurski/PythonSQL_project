@@ -124,3 +124,41 @@ def motivations(request):
     motivations_list = Motivations.objects.raw('''SELECT * FROM motivations WHERE user_id = %s''',[user_id])
     context = {'motivations': motivations_list}
     return render(request,'habits/motivations.html',context)
+
+# Adding habits
+def add_habit(request):
+    # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    return render(request, 'habits/add_habit.html')
+
+# Handle adding habits
+def add_habit_submission(request):
+     # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    if request.method == "POST":
+        
+        user_id = session["user_id"]
+        habit_desc = request.POST["habit_desc"]
+        habit_name = request.POST["habit_name"]
+        success_activity = request.POST["success_activity"]
+        success_range = request.POST["success_range"]
+        success_amount = request.POST["success_amount"]
+        success_unit = request.POST["success_unit"]
+        habit_days_target = request.POST["habit_days_target"]
+
+        cursor = connections['default'].cursor()
+        # get next id
+        habbits = Habbits.objects.raw('''SELECT * FROM habbits''')
+        next_id = len(habbits)
+        # insert
+        cursor.execute("INSERT INTO habbits VALUES( %s , %s, %s, %s, %s, %s, %s, %s, %s, %s)", [next_id, user_id, 1, habit_desc, habit_name, 
+                                                                                                        habit_days_target, success_activity, success_range,
+                                                                                                        success_amount, success_unit])
+        
+        return redirect('/habits')
+    return redirect('/habits/add_habit')
+
