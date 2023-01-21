@@ -4,13 +4,57 @@
   <h1 class="text-center mb-3">Habits time-line</h1>
   {% if posts %}
     {% for post in posts %}
+      <div class="col-md-8 col-xl-12">
+        <div class="card">
+          <div class="card-header">
+          </div>
+          <div class="card-body h-100">
+
+            <div class="d-flex align-items-start">
+              <div class="flex-grow-1">
+                <big><strong>{{post.post_user}}</strong> shared a <strong>post</strong>!</big>            <a href="#" style="float:right" class="btn btn-sm btn-danger mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart feather-sm"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Like</a>
+                <br>
+                <medium class="text-muted">on {{post.post_date}}</medium><br>
+                
+                <div class="border text-bi text-muted p-2 mt-1">
+                  <big> {{post.post_content}}</big>
+                </div>
+                
+                
+                <div class="d-flex align-items-start mt-1">
+                  <div class="flex-grow-1">
+                    <big><strong>Comments section</strong></big><br>
+                    <strong>{{post.comment_user}}</strong> commented on {{post.comment_date}} <br>
+                    <div class="border text-muted p-2 mt-1">
+                      {{post.comment_content}}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    <div class="d-grid">
+      <a href="#" class="btn btn-primary">Load more</a>
+    </div>
+    {% else %}
+    <p> No Posts available</p>
+  {% endif %}
+
+  {% comment %} {% if posts %}
+    {% for post in posts %}
         <div class="card mb-3">
             <div class="card-body">
-                <p class="lead">{{post.content}}</p>
+                
+                <p class="lead">{{post.content}} user: {{post.user_id}} username {{post.user_name}} date {{post.publish_date}}</p>
             </div>
         </div>
     {% endfor %}
   {% else %}
     <p> No Posts available</p>
-  {% endif %}
+  {% endif %} {% endcomment %}
 {% endblock %}

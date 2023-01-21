@@ -40,7 +40,15 @@ def index(request):
     if not checkLogin():
         return redirect(login)
 
-    posts_lists = Posts.objects.raw('SELECT * FROM posts ORDER BY publish_date DESC LIMIT 10')
+    posts_lists = Posts.objects.raw('''SELECT p.post_id, p.publish_date as post_date, p.content as post_content, u.user_name as post_user,
+                                                c.publish_date as comment_date, c.content as comment_content, v.user_name as comment_user
+                                        FROM posts as p
+                                        JOIN users_list as u ON p.user_id=u.user_id 
+                                        JOIN comments as c ON p.post_id=c.post_id
+                                        join users_list as v on c.user_id=v.user_id
+                                        ORDER BY p.publish_date DESC LIMIT 10''')
+    for p in posts_lists:
+        print(vars(p))
     context = {'posts': posts_lists}
     return render(request,'habits/index.html',context)
 
