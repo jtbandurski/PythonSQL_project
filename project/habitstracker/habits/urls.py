@@ -15,4 +15,5 @@ urlpatterns = [
     path('motivations/',views.motivations, name='motivations'),
     path('add_habit/',views.add_habit, name='add_habit'),
     path('add_habit/submission/',views.add_habit_submission, name='add_habitsubmission/'),
+    path('comment/submission/',views.add_comment_submission, name='add_commentssubmission/'),
 ]

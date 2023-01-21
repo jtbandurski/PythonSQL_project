@@ -1,9 +1,11 @@
 from sqlite3 import IntegrityError
 from django.shortcuts import render, redirect
 
-from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList
+from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList, Comments
 from django.contrib.sessions.backends.base import SessionBase
 from django.db import connections
+
+from datetime import datetime
 
 
 
@@ -41,18 +43,42 @@ def index(request):
     if not checkLogin():
         return redirect(login)
 
-    posts_lists = Posts.objects.raw('''SELECT p.post_id, p.publish_date as post_date, p.content as post_content, u.user_name as post_user,
-                                                c.publish_date as comment_date, c.content as comment_content, v.user_name as comment_user
+    posts_lists = Posts.objects.raw('''SELECT p.post_id, p.publish_date as post_date, p.content as post_content, u.user_name as post_user
                                         FROM posts as p
                                         JOIN users_list as u ON p.user_id=u.user_id 
-                                        JOIN comments as c ON p.post_id=c.post_id
-                                        join users_list as v on c.user_id=v.user_id
                                         ORDER BY p.publish_date DESC LIMIT 10''')
-    for p in posts_lists:
-        print(vars(p))
-    context = {'posts': posts_lists}
+
+    comments_lists = Comments.objects.raw('''SELECT c.comment_id, c.post_id, c.publish_date as comment_date, c.content as comment_content, u.user_name as comment_user
+                                                FROM comments as c
+                                                JOIN users_list as u ON c.user_id=u.user_id''')
+
+    context = {'posts': posts_lists, 'comments': comments_lists}
     return render(request,'habits/index.html',context)
 
+
+# handling comments
+def add_comment_submission(request):
+     # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    if request.method == "POST":
+        
+        content = request.POST["content"]
+        post_id = request.POST["post_id"]
+        user_id = session['user_id']
+        date = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        cursor = connections['default'].cursor()
+        # get next id
+        comments = Comments.objects.raw('''SELECT comment_id FROM comments''')
+        next_id = len(comments)
+        # insert
+        cursor.execute("INSERT INTO comments VALUES( %s , %s, %s, %s, %s)", [next_id, post_id, user_id, date, content])
+        print('INSERTED')
+        
+        return redirect('/habits')
+    return redirect('/habits')
 
 # handling login
 def login(request):

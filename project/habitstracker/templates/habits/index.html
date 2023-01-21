@@ -23,11 +23,26 @@
                 
                 <div class="d-flex align-items-start mt-1">
                   <div class="flex-grow-1">
+                    <br>
                     <big><strong>Comments section</strong></big><br>
-                    <strong>{{post.comment_user}}</strong> commented on {{post.comment_date}} <br>
-                    <div class="border text-muted p-2 mt-1">
-                      {{post.comment_content}}
-                    </div>
+                    {% for comment in comments %}
+                        {% if post.post_id == comment.post_id%}
+                          <strong>{{comment.comment_user}}</strong> commented on {{comment.comment_date}} <br>
+                          <div class="border text-muted p-2 mt-1">
+                            {{comment.comment_content}}
+                          </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <form method="post" action="/habits/comment/submission/">
+                      {% csrf_token %}
+                      <div class="card-body text-center">
+                        <input type="text" id ='content' name='content'class="form-control" placeholder="Your comment">
+                        <br>
+                        <input type="hidden" id="post_id" name="post_id" value="{{post.post_id}}">
+                        <button type="submit" >Add comment!</button>
+                      </div>
+                    </form>
                   </div>
                 </div>
 
