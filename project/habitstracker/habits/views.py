@@ -1,7 +1,7 @@
 from sqlite3 import IntegrityError
 from django.shortcuts import render, redirect
 
-from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList, Comments
+from .models import Posts, Habbits, HabbitsTracker, Motivations, UsersList, Comments, Likes
 from django.contrib.sessions.backends.base import SessionBase
 from django.db import connections
 
@@ -42,19 +42,38 @@ def index(request):
     # Check Auth
     if not checkLogin():
         return redirect(login)
+    user_id = session['user_id']
 
-    posts_lists = Posts.objects.raw('''SELECT p.post_id, p.publish_date as post_date, p.content as post_content, u.user_name as post_user
-                                        FROM posts as p
-                                        JOIN users_list as u ON p.user_id=u.user_id 
-                                        ORDER BY p.publish_date DESC LIMIT 10''')
+    posts_lists = Posts.objects.raw('''SELECT p.post_id, p.publish_date as post_date, p.content as post_content, u.user_name as post_user,l.like_value as like_value, li.number_of_likes as number_of_likes
+                                            FROM posts as p
+                                            left JOIN users_list as u ON p.user_id=u.user_id 
+                                            left JOIN (SELECT post_id, user_id, like_value from likes where user_id=%s) as l on p.post_id=l.post_id
+                                            LEFT JOIN (SELECT post_id, COUNT(like_value) as number_of_likes from likes group by post_id) as li on p.post_id=li.post_id
+                                            ORDER BY p.publish_date DESC LIMIT 10''', [user_id])
 
     comments_lists = Comments.objects.raw('''SELECT c.comment_id, c.post_id, c.publish_date as comment_date, c.content as comment_content, u.user_name as comment_user
                                                 FROM comments as c
                                                 JOIN users_list as u ON c.user_id=u.user_id''')
 
-    context = {'posts': posts_lists, 'comments': comments_lists}
+    likes_lists = Likes.objects.raw('''SELECT * FROM likes WHERE user_id=%s''',[user_id])
+    
+    context = {'posts': posts_lists, 'comments': comments_lists, 'likes': likes_lists}
     return render(request,'habits/index.html',context)
 
+
+# handling likes
+
+def like(request, post_id):
+    # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    print(post_id)
+
+    if request.method == "POST":
+        print(request.POST["content"])
+
+        return redirect(index)
 
 # handling comments
 def add_comment_submission(request):
