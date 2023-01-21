@@ -37,7 +37,7 @@
                     <form method="post" action="/habits/comment/submission/">
                       {% csrf_token %}
                       <div class="card-body text-center">
-                        <input type="text" id ='content' name='content'class="form-control" placeholder="Your comment">
+                        <input type="text" id ='content' name='content'class="form-control" required="required" placeholder="Your comment">
                         <br>
                         <input type="hidden" id="post_id" name="post_id" value="{{post.post_id}}">
                         <button type="submit" >Add comment!</button>
