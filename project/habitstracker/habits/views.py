@@ -1,3 +1,4 @@
+from sqlite3 import IntegrityError
 from django.shortcuts import render, redirect
 
 from .models import Posts, Habbits, HabbitsTracker, Motivations,UsersList
