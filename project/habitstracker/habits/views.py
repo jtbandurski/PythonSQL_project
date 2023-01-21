@@ -134,6 +134,18 @@ def add_progress_submission(request):
         # insert
         cursor.execute("INSERT INTO habbits_tracker VALUES( %s , %s, %s, %s, %s, %s)", [next_id, habit_id, 1, date, None, amount])
         
+        # adding post to the database
+        if request.POST["post"] is not None:
+            content = request.POST["post"]
+            user_id = session['user_id']
+            date = datetime.now().strftime("%Y-%m-%d %H:%M")
+            # get next id
+            posts = Posts.objects.raw('''SELECT post_id FROM posts''')
+            next_id = len(posts)
+            # insert
+            cursor.execute("INSERT INTO posts VALUES( %s , %s, %s, %s)", [next_id, user_id, date, content])
+        
+
         return redirect('/habits')
     return redirect('/habits/add_progress')
 
