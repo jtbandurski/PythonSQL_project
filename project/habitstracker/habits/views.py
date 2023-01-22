@@ -48,7 +48,7 @@ def index(request):
                                             FROM posts as p
                                             left JOIN users_list as u ON p.user_id=u.user_id 
                                             left JOIN (SELECT post_id, user_id, like_value from likes where user_id=%s) as l on p.post_id=l.post_id
-                                            LEFT JOIN (SELECT post_id, COUNT(like_value) as number_of_likes from likes group by post_id) as li on p.post_id=li.post_id
+                                            LEFT JOIN (SELECT post_id, COUNT(like_value) as number_of_likes from likes WHERE like_value=1 group by post_id) as li on p.post_id=li.post_id
                                             ORDER BY p.publish_date DESC LIMIT 10''', [user_id])
 
     comments_lists = Comments.objects.raw('''SELECT c.comment_id, c.post_id, c.publish_date as comment_date, c.content as comment_content, u.user_name as comment_user
@@ -61,6 +61,23 @@ def index(request):
     return render(request,'habits/index.html',context)
 
 
+# handling dislikes
+
+def dislike(request, post_id):
+    # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    user_id = session['user_id']
+    cursor = connections['default'].cursor()
+    #  update
+    cursor.execute('''DELETE FROM likes
+                        WHERE post_id=%s and user_id=%s''', [post_id, user_id])
+
+    cursor.execute('''INSERT INTO likes (post_id, user_id, like_value)
+                        VALUES (%s,%s,0)''', [post_id, user_id])
+    return redirect(index)
+
 # handling likes
 
 def like(request, post_id):
@@ -68,12 +85,16 @@ def like(request, post_id):
     if not checkLogin():
         return redirect(login)
 
-    print(post_id)
+    user_id = session['user_id']
+    cursor = connections['default'].cursor()
+    #  update
+    cursor.execute('''DELETE FROM likes
+                        WHERE post_id=%s and user_id=%s''', [post_id, user_id])
 
-    if request.method == "POST":
-        print(request.POST["content"])
+    cursor.execute('''INSERT INTO likes (post_id, user_id, like_value)
+                        VALUES (%s,%s,1)''', [post_id, user_id])
 
-        return redirect(index)
+    return redirect(index)
 
 # handling comments
 def add_comment_submission(request):
@@ -89,14 +110,10 @@ def add_comment_submission(request):
         date = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         cursor = connections['default'].cursor()
-        # get next id
-        comments = Comments.objects.raw('''SELECT comment_id FROM comments''')
-        next_id = len(comments)
         # insert
-        cursor.execute("INSERT INTO comments VALUES( %s , %s, %s, %s, %s)", [next_id, post_id, user_id, date, content])
-        print('INSERTED')
+        cursor.execute('''INSERT INTO comments (post_id, user_id, publish_date, content)
+                        VALUES (%s, %s, %s, %s)''', [post_id, user_id, date, content])
         
-        return redirect('/habits')
     return redirect('/habits')
 
 # handling login
@@ -146,23 +163,23 @@ def add_progress_submission(request):
         habit_id = request.POST["selected_habit"]
         amount = request.POST["amount"]
         date = request.POST["date"]
+
         cursor = connections['default'].cursor()
-        # get next id
-        habbits_tracker = Habbits.objects.raw('''SELECT * FROM habbits_tracker''')
-        next_id = len(habbits_tracker)
         # insert
-        cursor.execute("INSERT INTO habbits_tracker VALUES( %s , %s, %s, %s, %s, %s)", [next_id, habit_id, 1, date, None, amount])
-        
+        cursor.execute('''INSERT INTO habbits_tracker (habbit_id, habbit_type, date, yes_no_value, success_amount_value)
+                        VALUES (%s, %s, %s, %s, %s)''', [habit_id, 1, date, None, amount])
+
+
         # adding post to the database
         if request.POST["post"] is not None:
             content = request.POST["post"]
             user_id = session['user_id']
             date = datetime.now().strftime("%Y-%m-%d %H:%M")
-            # get next id
-            posts = Posts.objects.raw('''SELECT post_id FROM posts''')
-            next_id = len(posts)
+
+            cursor = connections['default'].cursor()
             # insert
-            cursor.execute("INSERT INTO posts VALUES( %s , %s, %s, %s)", [next_id, user_id, date, content])
+            cursor.execute('''INSERT INTO posts (user_id, publish_date, content)
+                            VALUES (%s, %s, %s)''', [user_id, date, content])
         
 
         return redirect('/habits')
@@ -191,6 +208,24 @@ def motivations(request):
     context = {'motivations': motivations_list}
     return render(request,'habits/motivations.html',context)
 
+# handling new motivations
+def add_motivation_submission(request):
+    # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    if request.method == "POST":
+        
+        user_id = session["user_id"]
+        motivation_desc = request.POST["motivation"]
+
+        cursor = connections['default'].cursor()
+        # get next id
+        cursor.execute('''INSERT INTO motivations (user_id, motivation_desc)
+                        VALUES (%s,%s)''', [user_id, motivation_desc])
+        
+    return redirect('/habits/motivations')
+
 # Adding habits
 def add_habit(request):
     # Check Auth
@@ -217,13 +252,13 @@ def add_habit_submission(request):
         habit_days_target = request.POST["habit_days_target"]
 
         cursor = connections['default'].cursor()
-        # get next id
-        habbits = Habbits.objects.raw('''SELECT * FROM habbits''')
-        next_id = len(habbits)
         # insert
-        cursor.execute("INSERT INTO habbits VALUES( %s , %s, %s, %s, %s, %s, %s, %s, %s, %s)", [next_id, user_id, 1, habit_desc, habit_name, 
-                                                                                                        habit_days_target, success_activity, success_range,
-                                                                                                        success_amount, success_unit])
+        cursor.execute('''INSERT INTO habbits (user_id, habbit_type, habbit_desc, habbit_name, 
+                                                        habbit_days_target, success_activity, success_range, 
+                                                        success_amount, success_unit)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''', [user_id, 1, habit_desc, habit_name, 
+                                                                                habit_days_target, success_activity, success_range,
+                                                                                success_amount, success_unit])
         
         return redirect('/habits')
     return redirect('/habits/add_habit')
