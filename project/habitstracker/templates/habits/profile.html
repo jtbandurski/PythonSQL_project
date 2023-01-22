@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card">
+        <div class="card-body">
+            <div class="m-sm-4">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input class="form-control form-control-lg" value="{{profile.first_name}}" required="" type="text" name="fname" placeholder="Enter your first name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input class="form-control form-control-lg" value="{{profile.last_name}}" required="" type="text" name="lname" placeholder="Enter your last name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Occupation</label>
+                        <input class="form-control form-control-lg" value="{{profile.occupation}}" required="" type="text" name="occupation" placeholder="Enter your  occupation">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">UserName</label>
+                        <input class="form-control form-control-lg" value="{{profile.user_name}}" disabled required="" type="text" name="uname" placeholder="Enter your username">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control form-control-lg" value="{{profile.email}}" disabled required="" type="email" name="email" placeholder="Enter your email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input class="form-control form-control-lg" value="{{profile.password}}" required="" type="password" name="password" placeholder="Enter password">
+                    </div>
+                    <div class="medium">
+                        <span class="text-danger" bg-color="red"> </span>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-lg btn-warning">Update
+                        <!-- <button type="submit" class="btn btn-lg btn-primary">Sign up</button> -->
+                    </button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

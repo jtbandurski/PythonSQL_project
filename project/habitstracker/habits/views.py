@@ -37,6 +37,29 @@ def register(request):
 
     return render(request,'register.html',context)
 
+def profile(request):
+    if not checkLogin():
+        return redirect(login)
+
+    user_id = session['user_id']
+    if request.method =='POST':
+        user = UsersList.objects.get(pk=user_id)
+      
+        user.first_name      = request.POST.get('fname')
+        user.last_name      = request.POST.get('lname')
+        user.occupation = request.POST.get('occupation')
+        user.password   = request.POST.get('password')
+        user.save()
+        return redirect('/habits')
+    
+
+    profile = UsersList.objects.raw('''SELECT * FROM users_list WHERE user_id = %s''',[user_id])[0]
+    context = {'profile': profile}
+
+  
+    return render(request,'habits/profile.html',context)
+
+
 
 def index(request):
     # Check Auth
