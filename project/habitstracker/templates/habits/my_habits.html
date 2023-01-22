@@ -1,22 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="medium"><a class="btn btn-primary" href="/habits/add_habit">Add new Habit!</a></div>
   <h1 class="text-center mb-3">My Habits</h1>
   {% if habits %}
     {% for habit in habits %}
         <div class="card mb-3">
           <div class="card-header">
-            <h5 class="card-title mb-0">{{habit.habbit_name}}</h5>
+            <h4 class="card-title mb-0"><b>Habit Name:</b> {{habit.habbit_name}}</h4>
           </div>
           <div class="card-body">
-            <p class="card-text">{{habit.habbit_desc}}</p>
+            <p class="card-text"><b>Daily routine {{habit.success_activity}} {{habit.success_range}} {{habit.success_amount}} {{habit.success_unit}}</b> </p>
+            <p class="card-text"><b>Habit target:</b> {{habit.success_activity}} for {{habit.habbit_days_target}}  {{habit.success_unit}}</p>
+
+          </div>
+          <div class="card-body">
+            <p class="card-text"><b>Description:</b> {{habit.habbit_desc}}</p>
+            <p style="text-align:right" class="card-text"> 
+              <a class="btn btn-warning" href="/habits/add_habit/{{habit.habbit_id}}">Edit</a> |
+              <a class="btn btn-danger" href="/habits/delete_habit/{{habit.habbit_id}}">Delete</a> 
+             </p>
           </div>
         </div>
     {% endfor %}
-    <div class="medium"><a href="/habits/add_habit">Add new Habit!</a></div>
+  
   {% else %}
     <p> No Habits available</p>
-    <div class="medium"><a href="/habits/add_habit">Add new Habit!</a></div>
   {% endif %}
 
   

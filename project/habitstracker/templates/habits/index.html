@@ -55,7 +55,7 @@
                         <input type="text" id ='content' name='content'class="form-control" required="required" placeholder="Your comment">
                         <br>
                         <input type="hidden" id="post_id" name="post_id" value="{{post.post_id}}">
-                        <button type="submit" >Add comment!</button>
+                        <button class="btn btn-primary" type="submit" >Add comment!</button>
                       </div>
                     </form>
                   </div>
@@ -68,9 +68,7 @@
         </div>
       </div>
     {% endfor %}
-    <div class="d-grid">
-      <a href="#" class="btn btn-primary">Load more</a>
-    </div>
+
     {% else %}
     <p> No Posts available</p>
   {% endif %}

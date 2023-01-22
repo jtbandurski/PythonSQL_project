@@ -51,14 +51,14 @@
 			</div>
 
 			<div class="card-body text-center">
-				<button type="submit" >Track your habit!</button>
+				<button class="btn btn-success" type="submit" >Track your habit!</button>
 			</div>
 			
 		</div>
 	</form>
 	{% else %}
     <p> Add your Habits to see them here!</p>
-	<div class="medium"><a href="/habits/add_habit">Add new Habit!</a></div>
+	<div class="medium"><a class="btn btn-primary" href="/habits/add_habit">Add new Habit!</a></div>
   {% endif %}
 
 {% endblock %}

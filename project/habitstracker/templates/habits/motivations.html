@@ -7,31 +7,27 @@
         <div class="card mb-3">
           <div class="card-header">
             <div><big><strong>{{motivation.motivation_desc}}</strong></big></div>
+            <p style="text-align:right" class="card-text"> 
+              <a class="btn btn-danger" href="/habits/delete_motivation/{{motivation.motivation_id}}">Delete</a> 
+             </p>
           </div>
         </div>
     {% endfor %}
-    <div class="card">
+  {% else %}
+    <p> No Motivation available!</p>
+    
+  {% endif %}
+  <div class="card">
 			<div class="card-header">
 				<h5 class="card-title mb-0">What is your new motivation?</h5>
 			</div>
-      <form method="post" action="submission/">
-        {% csrf_token %}
-				<div class="card-body">
-					<input type="text" id ='motivation' name='motivation'class="form-control" placeholder="Your motivation">
-          <br><button type="submit" >Add new Motivation!</button>
-				</div>
-      </form>
-		</div>
-  {% else %}
-    <p> No Habits available</p>
-    <form method="post" action="submission/">
-      {% csrf_token %}
-      <div class="card-body">
-        <input type="text" id ='motivation' name='motivation'class="form-control" placeholder="Your motivation">
-        <br><button type="submit" >Add new Motivation!</button>
-      </div>
-    </form>
-  {% endif %}
 
+  <form method="post" action="submission/">
+    {% csrf_token %}
+    <div class="card-body">
+      <input type="text" id ='motivation' name='motivation'class="form-control" placeholder="Your motivation">
+      <br><button class="btn btn-success" type="submit" >Add new Motivation!</button>
+    </div>
+  </form>
   
 {% endblock %}

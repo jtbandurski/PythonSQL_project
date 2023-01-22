@@ -129,9 +129,6 @@ def login(request):
         else:
             session['user_id']   = users.user_id
             session['user_Name'] = users.user_name
-           
-            print(session)
-            print( session['user_Name'])
             return redirect(index)
     
     return render(request, 'login.html',context)
@@ -226,40 +223,77 @@ def add_motivation_submission(request):
         
     return redirect('/habits/motivations')
 
-# Adding habits
-def add_habit(request):
+# Delete motivation
+def delete_motivation(request, id = 0):
+    # Check Auth
+    if not checkLogin():
+        return redirect(login)
+    
+    if id != 0:
+        cursor = connections['default'].cursor()
+        cursor.execute('''delete FROM motivations WHERE motivation_id = %s''',[id])
+      
+    return redirect('/habits/motivations')      
+
+
+# Adding/Edit habits
+def add_habit(request, id = 0):
     # Check Auth
     if not checkLogin():
         return redirect(login)
 
-    return render(request, 'habits/add_habit.html')
-
-# Handle adding habits
-def add_habit_submission(request):
-     # Check Auth
-    if not checkLogin():
-        return redirect(login)
+    context = {}
+    if id != 0:
+        habits_list = Habbits.objects.raw('''SELECT * FROM habbits WHERE habbit_id = %s''',[id])[0]
+        context = {'habit': habits_list}
 
     if request.method == "POST":
-        
         user_id = session["user_id"]
         habit_desc = request.POST["habit_desc"]
+        habbit_id = request.POST["habbit_id"]
         habit_name = request.POST["habit_name"]
         success_activity = request.POST["success_activity"]
         success_range = request.POST["success_range"]
         success_amount = request.POST["success_amount"]
         success_unit = request.POST["success_unit"]
-        habit_days_target = request.POST["habit_days_target"]
+        habit_days_target = request.POST["habbit_days_target"]
 
         cursor = connections['default'].cursor()
-        # insert
-        cursor.execute('''INSERT INTO habbits (user_id, habbit_type, habbit_desc, habbit_name, 
+        if habbit_id !=  "":
+            cursor.execute('''Update habbits set    
+                                                    habbit_type = %s,
+                                                    habbit_desc = %s,
+                                                    habbit_name = %s, 
+                                                    habbit_days_target = %s,
+                                                    success_activity = %s,
+                                                    success_range = %s,
+                                                    success_amount = %s,
+                                                    success_unit = %s
+                                                    where habbit_id= %s''',
+                                                     [ 1, habit_desc, habit_name, habit_days_target,
+                                                      success_activity, success_range,success_amount,
+                                                       success_unit,habbit_id])
+        else :
+            # insert
+            cursor.execute('''INSERT INTO habbits (user_id, habbit_type, habbit_desc, habbit_name, 
                                                         habbit_days_target, success_activity, success_range, 
                                                         success_amount, success_unit)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''', [user_id, 1, habit_desc, habit_name, 
                                                                                 habit_days_target, success_activity, success_range,
                                                                                 success_amount, success_unit])
         
-        return redirect('/habits')
-    return redirect('/habits/add_habit')
+        return redirect('/habits/my_habits')    
+    return render(request, 'habits/add_habit.html',context)
+
+# Delete habits
+def delete_habit(request, id = 0):
+    # Check Auth
+    if not checkLogin():
+        return redirect(login)
+
+    if id != 0:
+        cursor = connections['default'].cursor()
+        cursor.execute('''delete FROM habbits WHERE habbit_id = %s''',[id])
+      
+    return redirect('/habits/my_habits')      
 

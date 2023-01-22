@@ -14,9 +14,12 @@ urlpatterns = [
     path('my_habits/',views.my_habits, name='my_habits'),
     path('motivations/',views.motivations, name='motivations'),
     path('add_habit/',views.add_habit, name='add_habit'),
-    path('add_habit/submission/',views.add_habit_submission, name='add_habitsubmission/'),
+    path('add_habit/<id>/',views.add_habit, name='add_habit'),
+    path('delete_habit/<id>/',views.delete_habit, name='delete_habit'),
     path('comment/submission/',views.add_comment_submission, name='add_commentssubmission/'),
     path('dislike/<int:post_id>/',views.dislike, name='dislike'),
     path('like/<int:post_id>/',views.like, name='like'),
     path('motivations/submission/',views.add_motivation_submission, name='add_motivation_submission'),
+    path('delete_motivation/<id>',views.delete_motivation, name='delete_motivation'),
+
 ]
