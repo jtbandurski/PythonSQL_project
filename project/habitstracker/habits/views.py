@@ -1,3 +1,4 @@
+import json
 from sqlite3 import IntegrityError
 from django.shortcuts import render, redirect
 
@@ -51,13 +52,61 @@ def profile(request):
         user.password   = request.POST.get('password')
         user.save()
         return redirect('/habits')
-    
-
     profile = UsersList.objects.raw('''SELECT * FROM users_list WHERE user_id = %s''',[user_id])[0]
-    context = {'profile': profile}
+    context = {'profile': profile , 'nav':'profile'}
 
   
     return render(request,'habits/profile.html',context)
+
+def analysis(request):
+    if not checkLogin():
+        return redirect(login)
+
+    user_id = session['user_id']
+    habitsnames = Habbits.objects.raw('''SELECT habbit_id, habbit_name FROM habbits WHERE user_id = %s''',[user_id])
+    habit_id = request.GET.get('habit_id',False)
+    context = {'habitsnames': habitsnames, 'nav':'analysis'}
+    if habit_id != 0:
+        cursor = connections['default'].cursor()
+        query = f'''select 
+                                                h.habbit_id, 
+                                                h.habbit_name,
+                                                strftime('%d-%m', date),
+                                                ht.success_amount_value,
+                                                h.success_unit 
+                                                from habbits h,
+                                                habbits_tracker ht
+                                                where 
+                                                h.habbit_id = ht.habbit_id
+                                                and h.habbit_id = {habit_id} and user_id = {user_id} order by date'''
+
+        cursor.execute(query)
+        results =cursor.fetchall()
+        dates = [row[2] for row in results] 
+        success_amount_value = [row[3] for row in results] 
+        label = [row[1] for row in results][0]
+        unit = [row[4] for row in results][0]
+        x_axis = json.dumps(dates)
+        y_axis = json.dumps(success_amount_value)
+        label = json.dumps(label)
+        unit = json.dumps(unit)
+
+
+        cards = Habbits.objects.raw('''select h.habbit_id, 
+                    h.habbit_name,h.success_unit,
+                    sum(ht.success_amount_value) amount_sucess,
+                    max(date) last_date
+                    from habbits h, habbits_tracker ht
+                    where h.habbit_id = ht.habbit_id
+                    and user_id = %s
+                    group by h.habbit_id, h.habbit_name,h.success_unit
+                    ''', [user_id])
+
+        context = {'habitsnames': habitsnames, 'x_axis':x_axis, 'y_axis':y_axis,'label':label, 'unit':unit, 'cards':cards, 'nav':'analysis'}
+
+
+
+    return render(request,'habits/analysis.html',context)
 
 
 
@@ -80,7 +129,7 @@ def index(request):
 
     likes_lists = Likes.objects.raw('''SELECT * FROM likes WHERE user_id=%s''',[user_id])
     
-    context = {'posts': posts_lists, 'comments': comments_lists, 'likes': likes_lists}
+    context = {'posts': posts_lists, 'comments': comments_lists, 'likes': likes_lists, 'nav':'home'}
     return render(request,'habits/index.html',context)
 
 
@@ -169,7 +218,7 @@ def add_progress(request):
 
     user_id = session['user_id']
     habits_list = Habbits.objects.raw('''SELECT * FROM habbits WHERE user_id = %s''',[user_id])
-    context = {'habits': habits_list}
+    context = {'habits': habits_list, 'nav':'habit'}
     return render(request, 'habits/add_progress.html', context)
 
 # handling logging habbits
@@ -214,7 +263,7 @@ def my_habits(request):
 
     user_id = session['user_id']
     habits_list = Habbits.objects.raw('''SELECT * FROM habbits WHERE user_id = %s''',[user_id])
-    context = {'habits': habits_list}
+    context = {'habits': habits_list,'nav':'myhabit'}
     return render(request, 'habits/my_habits.html',context)
 
 # Motivations page
@@ -225,7 +274,7 @@ def motivations(request):
 
     user_id = session['user_id']
     motivations_list = Motivations.objects.raw('''SELECT * FROM motivations WHERE user_id = %s''',[user_id])
-    context = {'motivations': motivations_list}
+    context = {'motivations': motivations_list, 'nav':'motivation'}
     return render(request,'habits/motivations.html',context)
 
 # handling new motivations
@@ -268,7 +317,7 @@ def add_habit(request, id = 0):
     context = {}
     if id != 0:
         habits_list = Habbits.objects.raw('''SELECT * FROM habbits WHERE habbit_id = %s''',[id])[0]
-        context = {'habit': habits_list}
+        context = {'habit': habits_list,'nav':'myhabit'}
 
     if request.method == "POST":
         user_id = session["user_id"]

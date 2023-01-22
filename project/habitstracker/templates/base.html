@@ -33,40 +33,40 @@
 				<ul class="sidebar-nav">
 
 
-					<li class="sidebar-item">
+					<li class="sidebar-item {% if nav == 'home' %} active {% endif %}">
 						<a class="sidebar-link" href="/habits">
 							<i class="align-middle" data-feather="sliders"></i> <span
 								class="align-middle">Home Page</span>
 						</a>
 					</li>
 
-					<li class="sidebar-item">
+					<li class="sidebar-item {% if nav == 'profile' %} active {% endif %}">
 						<a class="sidebar-link" href="/habits/profile">
 							<i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
 						</a>
 					</li>
 
-					<li class="sidebar-item">
+					<li class="sidebar-item {% if nav == 'myhabit' %} active {% endif %}">
 						<a class="sidebar-link" href="/habits/my_habits">
 							<i class="align-middle" data-feather="log-in"></i> <span class="align-middle">My Habits</span>
 						</a>
 					</li>
 
-					<li class="sidebar-item">
+					<li class="sidebar-item {% if nav == 'motivation' %} active {% endif %}">
 						<a class="sidebar-link" href="/habits/motivations">
 							<i class="align-middle" data-feather="user-plus"></i> <span class="align-middle"> Motivation <span>
 						</a>
 					</li>
 
-					<li class="sidebar-item">
+					<li class="sidebar-item {% if nav == 'habit' %} active {% endif %}">
 						<a class="sidebar-link" href="/habits/add_progress">
 							<i class="align-middle" data-feather="book"></i> <span class="align-middle">Habit Logger </span>
 						</a>
 					</li>
 
 			
-                    <li class="sidebar-item">
-						<a class="sidebar-link" href="pages-blank.html">
+                    <li class="sidebar-item {% if nav == 'analysis' %} active {% endif %}">
+						<a class="sidebar-link" href="/habits/analysis">
 							<i class="align-middle" data-feather="book"></i> <span class="align-middle">Analysis</span>
 						</a>
 					</li>
@@ -94,7 +94,7 @@
 
 							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
 								data-bs-toggle="dropdown">
-								 <span class="text-dark"> First Name</span>
+								 <span class="text-dark"> {{ username }} </span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-end">
 							
