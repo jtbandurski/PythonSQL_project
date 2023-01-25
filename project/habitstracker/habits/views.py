@@ -82,15 +82,17 @@ def analysis(request):
 
         cursor.execute(query)
         results =cursor.fetchall()
-        dates = [row[2] for row in results] 
-        success_amount_value = [row[3] for row in results] 
-        label = [row[1] for row in results][0]
-        unit = [row[4] for row in results][0]
-        x_axis = json.dumps(dates)
-        y_axis = json.dumps(success_amount_value)
-        label = json.dumps(label)
-        unit = json.dumps(unit)
-
+        if len(results) > 0:
+            dates = [row[2] for row in results] 
+            success_amount_value = [row[3] for row in results] 
+            label = [row[1] for row in results][0]
+            unit = [row[4] for row in results][0]
+            x_axis = json.dumps(dates)
+            y_axis = json.dumps(success_amount_value)
+            label = json.dumps(label)
+            unit = json.dumps(unit)
+        else:
+            return render(request,'habits/analysis.html',context)
 
         cards = Habbits.objects.raw('''select h.habbit_id, 
                     h.habbit_name,h.success_unit,
@@ -107,7 +109,6 @@ def analysis(request):
 
 
     return render(request,'habits/analysis.html',context)
-
 
 
 def index(request):

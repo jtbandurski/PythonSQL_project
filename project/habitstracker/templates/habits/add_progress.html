@@ -10,10 +10,10 @@
 				<h5 class="card-title mb-0">Select habit that you want to log</h5>
 			</div>
 				<div class="card-body">
-					<select class="form-select mb-3" name="selected_habit", id='selected_habit'>
-							<option selected>List of your habits</option>
+					<select onchange="updateDesc()" class="form-select mb-3" name="selected_habit", id='selected_habit'>
+							<option selected disabled>Select your habit</option>
 							{% for habit in habits %}
-								<option value={{habit.habbit_id}}>{{habit.habbit_name}}</option>
+								<option data-unit="{{habit.success_unit}}" data-name="{{habit.habbit_name}}" value={{habit.habbit_id}}>{{habit.habbit_name}}</option>
 							{% endfor %}
 							
 					</select>
@@ -34,7 +34,7 @@
 	
 		<div class="card">
 			<div class="card-header">
-				<h5 class="card-title mb-0">How many UNITS have you ACTIVITY?</h5>
+				<h5 id="desc" class="card-title mb-0">How many UNITS have you ACTIVITY?</h5>
 			</div>
 			<div class="card-body text-center">
 				<input type="number" id ='amount' name='amount'class="form-control" required="required" placeholder="Input">
@@ -60,5 +60,25 @@
     <p> Add your Habits to see them here!</p>
 	<div class="medium"><a class="btn btn-primary" href="/habits/add_habit">Add new Habit!</a></div>
   {% endif %}
+
+  <script>
+	function updateDesc() {
+    // Get the select element
+    var select = document.querySelector("select");
+
+    // Get the selected option
+    var option = select.options[select.selectedIndex];
+
+    // Get the data-unit and value attributes
+    var unit = option.getAttribute("data-unit");
+    var value = option.getAttribute("data-name");
+
+    // Get the h5 element
+    var h5 = document.getElementById("desc");
+
+    // Update the h5 element's text content
+    h5.textContent = "How many " + unit + " have you " + value + " ?";
+}
+  </script>
 
 {% endblock %}

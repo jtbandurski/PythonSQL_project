@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 class="text-center mb-3">Add New Habits</h1>
+  
+  {% if habit.habbit_id != null %}
+  <h1 class="text-center mb-3">Edit  Habits</h1>
+
+					{% else %}
+					<h1 class="text-center mb-3">Add New Habits</h1>
+
+					{% endif %}
   	<form method="post" action="">
 		{% csrf_token %}
 
