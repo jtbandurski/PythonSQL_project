@@ -10,7 +10,8 @@ PythonSQL project, group members: Ahmed Abdelmaksoud, Jakub Bandurski, Hamed Ahm
 -- there is a PDF file "Habit-Tracker-Report.pdf" contain a describtion about the project Idea and the requirment installtion to run the project.
 -- The project Structure contain 2 application 
 - Habitstracker app => whiche only contain the main route to the application iside the urls.py file 
-- BackEnd part
+
+- BackEnd 
 our main code is inside the habits folder 
 - models.py contain the classes that refelct the tabls inside the databse
 - urls.py contain the route for each page 
@@ -19,7 +20,9 @@ and processing these data to be rendered in the suitable html page
 
 -- Database 
 we are using sqlite the databse name is "database.db"
--- front-end part
+
+-- front-end 
+
 we are using html, javascript css, and bootstrap
 all the html part is inside "templates" file
 all the css/js/bootstrap files are inside "static" file
